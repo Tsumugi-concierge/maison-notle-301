@@ -57,3 +57,16 @@ Behavior
 
 Notes
 - No pull request was created; work is available on feat/i18n-6lang.
+
+Wi‑Fi Info Recovery (2026-11-21)
+- Context: Owner decision to keep Wi‑Fi password publicly visible. Only Wi‑Fi information was to be restored; access codes/keys remain hidden.
+- Restored items on /index.html (Home):
+  - Password row restored with exact value from main: hello.okubo
+  - QR toggle button and QR panel restored. Generates Wi‑Fi QR (WIFI:T:WPA;S:Maisonnotle301;P:hello.okubo;;) using qrcodejs CDN with fallback to qrserver.
+  - Added minimal CSS for .qr-toggle and .wifi-qr matching main’s behavior.
+  - Kept existing 6‑language i18n; QR button label and hint are localized via existing UI_STRINGS (qrBtn, qrHint). Toast messages still localized via COPIED_TEXT.
+- Non‑Wi‑Fi sensitive info: No restoration. Door/key/lockbox/access codes remain omitted as in the i18n branch.
+- Cross‑page checks:
+  - Language switch present on all pages: Home, Access, How to Open, House Rules, Nearby Shops, Taxi, Emergency, Trash, Equipment, Parking. Buttons use data-lang and/or existing handlers; assets/i18n.js is loaded on all i18n‑converted pages.
+  - URLs unchanged for all pages and section links.
+- Branch: Changes committed and pushed to feat/i18n-6lang.

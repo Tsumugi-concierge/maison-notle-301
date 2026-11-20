@@ -126,7 +126,14 @@
         .wifi-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
         .wifi-head-label { font-size: 0.72rem; font-weight: 900; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.8); flex: 1; }
         .wifi-head-emoji { font-size: 1.4rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15)); }
-        /* QR toggle removed (no password shown) */
+        .qr-toggle {
+            border: 1.5px solid rgba(255,255,255,0.35); background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(4px); border-radius: 999px; padding: 5px 12px; font-family: inherit;
+            font-size: 0.72rem; font-weight: 800; color: #fff; cursor: pointer; letter-spacing: 0.05em;
+            transition: all 0.2s; display: inline-flex; align-items: center; gap: 5px;
+        }
+        .qr-toggle:hover, .qr-toggle:focus-visible { background: rgba(255,255,255,0.28); border-color: rgba(255,255,255,0.6); outline: none; }
+        .qr-toggle .qr-ico { font-size: 0.9rem; }
         .wifi-rows { display: flex; flex-direction: column; gap: 8px; }
         .wifi-row {
             display: flex; align-items: center; gap: 10px; padding: 10px 14px;
@@ -141,7 +148,10 @@
         .wifi-row-val { flex: 1; font-size: 0.98rem; font-weight: 800; color: #fff; letter-spacing: 0.02em; word-break: break-all; }
         .wifi-row-action { font-size: 0.95rem; opacity: 0.75; flex-shrink: 0; transition: transform 0.3s var(--ease-pop); }
         .wifi-row:hover .wifi-row-action { transform: scale(1.15); opacity: 1; }
-        /* QR panel removed */
+        .wifi-qr { display: none; margin-top: 14px; padding: 16px; background: #fff; border-radius: var(--r-md); text-align: center; animation: fadeIn 0.3s ease; }
+        .wifi-qr.visible { display: block; }
+        .wifi-qr canvas, .wifi-qr img { display: block; margin: 0 auto 8px; max-width: 200px; height: auto; image-rendering: pixelated; }
+        .wifi-qr-hint { font-size: 0.78rem; color: var(--text-mid); font-weight: 700; }
 
         .toast {
             position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%) translateY(20px);
@@ -265,6 +275,10 @@
             <div class="wifi-head">
                 <span class="wifi-head-emoji" aria-hidden="true">&#x1F4F6;</span>
                 <span class="wifi-head-label" id="wifi-title" data-i18n="wifiLabel">Wi-Fi</span>
+                <button class="qr-toggle" id="qrToggle" onclick="toggleQR()" aria-expanded="false" aria-controls="wifiQr">
+                    <span class="qr-ico">&#x25A3;</span>
+                    <span data-i18n="qrBtn">QR</span>
+                </button>
             </div>
             <div class="wifi-rows">
                 <button class="wifi-row" onclick="copyWifi(this, 'Maisonnotle301')" aria-label="Copy network name">
@@ -272,13 +286,16 @@
                     <span class="wifi-row-val">Maisonnotle301</span>
                     <span class="wifi-row-action" aria-hidden="true">&#x29C9;</span>
                 </button>
-                <div class="wifi-row" role="note" aria-live="polite">
+                <button class="wifi-row" onclick="copyWifi(this, 'hello.okubo')" aria-label="Copy password">
                     <span class="wifi-row-label" data-i18n="passLabel">Password</span>
-                    <span class="wifi-row-val" data-i18n="passNote">Sent via your booking messages</span>
-                    <span class="wifi-row-action" aria-hidden="true">&#x1F512;</span>
-                </div>
+                    <span class="wifi-row-val">hello.okubo</span>
+                    <span class="wifi-row-action" aria-hidden="true">&#x29C9;</span>
+                </button>
             </div>
-            
+            <div class="wifi-qr" id="wifiQr">
+                <img id="wifiQrImg" alt="Wi-Fi QR code" width="200" height="200">
+                <p class="wifi-qr-hint" data-i18n="qrHint">Scan with your camera to connect</p>
+            </div>
         </section>
         <nav class="menu" aria-label="Guest menu">
             <div class="menu-group">
@@ -374,6 +391,8 @@
         <span id="toastText">Copied!</span>
     </div>
     <script>
+        // Wi-Fi credentials for QR generation (restored from main)
+        const WIFI = { ssid: 'Maisonnotle301', password: 'hello.okubo', type: 'WPA' };
         const COPIED_TEXT = {
             en: 'Copied!',
             ja: '\u30B3\u30D4\u30FC\u3057\u307E\u3057\u305F\uFF01',
@@ -484,6 +503,41 @@
             clearTimeout(showToast._t);
             showToast._t = setTimeout(() => t.classList.remove('show'), 1800);
         }
+        // QR handling (restored from main, adapted to this page)
+        let qrRendered = false;
+        function toggleQR() {
+            const panel = document.getElementById('wifiQr');
+            const btn = document.getElementById('qrToggle');
+            const open = !panel.classList.contains('visible');
+            panel.classList.toggle('visible', open);
+            btn.setAttribute('aria-expanded', String(open));
+            if (open && !qrRendered) renderQR();
+        }
+
+        function wifiQrString() {
+            const esc = s => String(s).replace(/([\\;,":])/g, '\\$1');
+            return `WIFI:T:${WIFI.type};S:${esc(WIFI.ssid)};P:${esc(WIFI.password)};;`;
+        }
+
+        function renderQR() {
+            const img = document.getElementById('wifiQrImg');
+            const payload = wifiQrString();
+            const tryLib = () => {
+                if (typeof QRCode === 'undefined') return false;
+                try {
+                    const tmp = document.createElement('div');
+                    new QRCode(tmp, { text: payload, width: 200, height: 200, correctLevel: QRCode.CorrectLevel.M });
+                    const canvas = tmp.querySelector('canvas');
+                    if (canvas) { img.src = canvas.toDataURL('image/png'); qrRendered = true; return true; }
+                    const imgEl = tmp.querySelector('img');
+                    if (imgEl && imgEl.src) { img.src = imgEl.src; qrRendered = true; return true; }
+                } catch {}
+                return false;
+            };
+            if (tryLib()) return;
+            img.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(payload)}`;
+            qrRendered = true;
+        }
         // Initialize shared i18n using existing UI_STRINGS
         function applyExtra(lang) {
             const EXTRA = {
@@ -509,6 +563,7 @@
             }
         });
     </script>
+  <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs@master/qrcode.min.js" defer></script>
   <script src="assets/i18n.js" defer></script>
   <script src="assets/cute-pack.js" defer></script>
 </body>
