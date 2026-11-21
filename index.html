@@ -90,18 +90,7 @@
         .skip-link:focus { left: 10px; }
         main { position: relative; max-width: 560px; margin: 0 auto; z-index: 1; }
 
-        .lang-switcher {
-            position: fixed; top: calc(10px + env(safe-area-inset-top)); right: 10px;
-            z-index: 100; display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; max-width: 200px;
-        }
-        .lang-btn {
-            border: 1.5px solid rgba(222,146,130,0.35);
-            background: rgba(255,255,255,0.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            border-radius: 999px; padding: 5px 10px; font-family: inherit; font-size: 0.72rem; font-weight: 800;
-            color: var(--text-mid); cursor: pointer; transition: all 0.2s ease; box-shadow: var(--shadow-xs); letter-spacing: 0.02em;
-        }
-        .lang-btn.active { background: var(--orange); border-color: var(--orange); color: #fff; box-shadow: 0 4px 12px rgba(222,146,130,0.35); }
-        .lang-btn:hover:not(.active), .lang-btn:focus-visible:not(.active) { border-color: var(--orange); color: var(--orange); outline: none; }
+        /* language switcher styles provided by assets/i18n.css */
 
         .hero { text-align: center; padding: 54px 24px 28px; position: relative; }
         .hero-house {
@@ -262,17 +251,18 @@
         @media (min-width: 520px) { .btn-grid { grid-template-columns: repeat(2, 1fr); } }
     </style>
   <link rel="stylesheet" href="assets/cute-pack.css">
+  <link rel="stylesheet" href="assets/i18n.css">
   <style id="cute-pack-theme">:root{--cp-chip-a:#fde8df;--cp-chip-b:#fdf1f7;--cp-hover-shadow:rgba(222,146,130,.18);--cp-dot-1:rgba(249,168,212,.12);}</style>
 </head>
 <body>
     <a class="skip-link" href="#main">Skip to content</a>
     <nav class="lang-switcher" aria-label="Language">
-        <button class="lang-btn active" onclick="setLang('en', this)" aria-label="English">EN</button>
-        <button class="lang-btn" onclick="setLang('ja', this)" aria-label="&#x65E5;&#x672C;&#x8A9E;">JA</button>
-        <button class="lang-btn" onclick="setLang('zh', this)" aria-label="&#x4E2D;&#x6587;">ZH</button>
-        <button class="lang-btn" onclick="setLang('ko', this)" aria-label="&#xD55C;&#xAD6D;&#xC5B4;">KO</button>
-        <button class="lang-btn" onclick="setLang('fr', this)" aria-label="Fran&#xE7;ais">FR</button>
-        <button class="lang-btn" onclick="setLang('es', this)" aria-label="Espa&#xF1;ol">ES</button>
+        <button class="lang-btn" data-lang="en" aria-label="English">EN</button>
+        <button class="lang-btn" data-lang="ja" aria-label="日本語">JA</button>
+        <button class="lang-btn" data-lang="zh" aria-label="中文">ZH</button>
+        <button class="lang-btn" data-lang="ko" aria-label="한국어">KO</button>
+        <button class="lang-btn" data-lang="fr" aria-label="Français">FR</button>
+        <button class="lang-btn" data-lang="es" aria-label="Español">ES</button>
     </nav>
     <main id="main">
         <header class="hero">
@@ -296,7 +286,7 @@
                     <span class="wifi-row-val">Maisonnotle301</span>
                     <span class="wifi-row-action" aria-hidden="true">&#x29C9;</span>
                 </button>
-                <button class="wifi-row" onclick="copyWifi(this, '')" aria-label="Copy password">
+                <button class="wifi-row" onclick="copyWifi(this, 'hello.okubo')" aria-label="Copy password">
                     <span class="wifi-row-label" data-i18n="passLabel">Password</span>
                     <span class="wifi-row-val">hello.okubo</span>
                     <span class="wifi-row-action" aria-hidden="true">&#x29C9;</span>
@@ -379,7 +369,7 @@
             </div>
         </nav>
         <section class="chat-section" aria-label="Host contact">
-            <p id="hostContact">Please contact your host through the messaging feature on your booking site.</p>
+            <p id="hostContact" data-i18n="hostContact">Please contact your host through the messaging feature on your booking site.</p>
         </section>
         <aside class="emergency-strip" aria-labelledby="em-title">
             <div class="emergency-head">
@@ -400,20 +390,9 @@
         <span aria-hidden="true">&#x2713;</span>
         <span id="toastText">Copied!</span>
     </div>
-    <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs@master/qrcode.min.js" defer></script>
     <script>
+        // Wi-Fi credentials for QR generation (restored from main)
         const WIFI = { ssid: 'Maisonnotle301', password: 'hello.okubo', type: 'WPA' };
-
-        let currentLang = 'en';
-
-        const HOST_CONTACT = {
-            en: 'Please contact your host through the messaging feature on your booking site.',
-            ja: 'ご質問は、ご予約サイトのメッセージでホストへご連絡ください。',
-            zh: '如有疑问，请通过预订平台的消息功能联系房东。',
-            ko: '문의 사항은 예약 사이트의 메시지 기능을 통해 호스트에게 연락해 주세요.',
-            fr: 'Pour toute question, veuillez contacter votre hôte via la messagerie de votre site de réservation.',
-            es: 'Si tienes preguntas, contacta con tu anfitrión a través de los mensajes de la plataforma de reservas.',
-        };
         const COPIED_TEXT = {
             en: 'Copied!',
             ja: '\u30B3\u30D4\u30FC\u3057\u307E\u3057\u305F\uFF01',
@@ -495,15 +474,6 @@
             });
         }
 
-        function setLang(lang, btn) {
-            currentLang = lang;
-            document.getElementById('hostContact').textContent = HOST_CONTACT[lang];
-            document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            applyTranslations(lang);
-            document.documentElement.lang = lang;
-        }
-
         async function copyWifi(btn, text) {
             try { await navigator.clipboard.writeText(text); } catch {
                 const ta = document.createElement('textarea');
@@ -514,7 +484,8 @@
             }
             btn.classList.add('copied');
             setTimeout(() => btn.classList.remove('copied'), 900);
-            showToast(COPIED_TEXT[currentLang] || 'Copied!');
+            const langForToast = (typeof I18N !== 'undefined' && typeof I18N.getLang === 'function') ? I18N.getLang() : 'en';
+            showToast(COPIED_TEXT[langForToast] || 'Copied!');
         }
 
         function showToast(msg) {
@@ -524,7 +495,7 @@
             clearTimeout(showToast._t);
             showToast._t = setTimeout(() => t.classList.remove('show'), 1800);
         }
-
+        // QR handling (restored from main, adapted to this page)
         let qrRendered = false;
         function toggleQR() {
             const panel = document.getElementById('wifiQr');
@@ -559,9 +530,33 @@
             img.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(payload)}`;
             qrRendered = true;
         }
-
-        applyTranslations('en');
+        // Initialize shared i18n using existing UI_STRINGS
+        function applyExtra(lang) {
+            const EXTRA = {
+                en: { hostContact: 'Please contact your host through the messaging feature on your booking site.', passNote: 'Sent via your booking messages' },
+                ja: { hostContact: 'ご質問は、ご予約サイトのメッセージでホストへご連絡ください。', passNote: 'ご予約サイトのメッセージでお知らせします' },
+                zh: { hostContact: '如有疑问，请通过预订平台的消息功能联系房东。', passNote: '将通过预订平台消息发送' },
+                ko: { hostContact: '문의 사항은 예약 사이트의 메시지 기능을 통해 호스트에게 연락해 주세요.', passNote: '예약 사이트 메시지로 안내됩니다' },
+                fr: { hostContact: 'Pour toute question, veuillez contacter votre hôte via la messagerie de votre site de réservation.', passNote: 'Envoyé via vos messages de réservation' },
+                es: { hostContact: 'Si tienes preguntas, contacta con tu anfitrión a través de los mensajes de la plataforma de reservas.', passNote: 'Enviado por mensajes de su reserva' },
+            };
+            const t = EXTRA[lang] || {};
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const k = el.getAttribute('data-i18n');
+                if (k in t) el.textContent = t[k];
+            });
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof I18N !== 'undefined') {
+                I18N.init({ strings: UI_STRINGS, onChange: applyExtra });
+            } else {
+                // Fallback to English if i18n not loaded for some reason
+                applyTranslations('en');
+            }
+        });
     </script>
+  <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs@master/qrcode.min.js" defer></script>
+  <script src="assets/i18n.js" defer></script>
   <script src="assets/cute-pack.js" defer></script>
 </body>
 </html>

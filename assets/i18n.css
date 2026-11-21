@@ -1,0 +1,48 @@
+/* Shared language switcher styles for all pages */
+.lang-switcher,
+.lang-bar {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 10px 16px;
+  background: transparent;
+  z-index: 100;
+}
+
+/* Home page uses fixed corner switcher via .lang-switcher */
+.lang-switcher {
+  position: fixed;
+  top: calc(10px + env(safe-area-inset-top));
+  right: 10px;
+}
+
+.lang-btn {
+  border: 1.5px solid rgba(222,146,130,0.35);
+  background: rgba(255,255,255,0.92);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-radius: 999px;
+  padding: 5px 10px;
+  font-family: inherit;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #73504a;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(120,50,80,0.12);
+  letter-spacing: 0.02em;
+}
+
+.lang-btn.active {
+  background: #de9282;
+  border-color: #de9282;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(222,146,130,0.35);
+}
+
+.lang-btn:hover:not(.active),
+.lang-btn:focus-visible:not(.active) {
+  border-color: #de9282;
+  color: #de9282;
+  outline: none;
+}

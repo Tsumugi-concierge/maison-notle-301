@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Equipment - Maison Notle 301</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Pacifico&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/cute-pack.css">
+  <link rel="stylesheet" href="../assets/cute-pack.css">
+  <link rel="stylesheet" href="../assets/i18n.css">
 <style>
 :root{--accent:#d7bd55;--accent-dark:#a8872e;--accent-light:#f7df7c;--cream:#fff8e8;--text-dark:#4a3b16;--text-mid:#745f28;}
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -31,7 +32,7 @@ body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--text-da
 </head>
 <body>
 <div class="lang-bar">
-  <button class="lang-btn active" data-lang="en">EN</button>
+  <button class="lang-btn" data-lang="en">EN</button>
   <button class="lang-btn" data-lang="ja">JA</button>
   <button class="lang-btn" data-lang="zh">ZH</button>
   <button class="lang-btn" data-lang="ko">KO</button>
@@ -47,6 +48,7 @@ body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--text-da
   <div id="equipment-list"></div>
   <div class="back-footer"><a id="back-link" href="../">&larr; Back to Menu</a></div>
 </main>
+<script src="../assets/i18n.js" defer></script>
 <script>
 const STRINGS = {
   en: { back: '&larr; Back to Menu' },
@@ -54,7 +56,7 @@ const STRINGS = {
   zh: { back: '&larr; 返回菜单' },
   ko: { back: '&larr; 메뉴로 돌아가기' },
   fr: { back: '&larr; Retour au menu' },
-  es: { back: '&larr; Volver al menu' }
+  es: { back: '&larr; Volver al menú' }
 };
 const SECTIONS = [{"image": "./assets/pdf-pages/page-1.jpg", "title": {"en": "Air Conditioner", "ja": "エアコン", "zh": "空调", "ko": "에어컨", "fr": "Climatiseur", "es": "Aire acondicionado"}, "body": {"en": "Press COOL or HEAT to turn the air conditioner on. Use the upper and lower temperature buttons to adjust the setting, AIR VOLUME to change the fan speed, and OFF to stop it.", "ja": "冷房または暖房を押してエアコンを起動します。上下の温度ボタンで温度、AIR VOLUMEで風量を調整し、OFFで停止してください。", "zh": "按 COOL 或 HEAT 启动空调。用上下温度键调节温度，用 AIR VOLUME 调节风量，按 OFF 关闭。", "ko": "COOL 또는 HEAT 버튼으로 에어컨을 켜세요. 위아래 온도 버튼으로 온도를, AIR VOLUME으로 풍량을 조절하고 OFF로 끄면 됩니다.", "fr": "Appuyez sur COOL ou HEAT pour allumer la climatisation. Utilisez les boutons de temperature pour regler la temperature, AIR VOLUME pour la ventilation, puis OFF pour l arreter.", "es": "Pulse COOL o HEAT para encender el aire acondicionado. Use los botones de temperatura para ajustar la temperatura, AIR VOLUME para el caudal y OFF para apagarlo."}}, {"image": "./assets/pdf-pages/page-2.jpg", "title": {"en": "Washing Machine", "ja": "洗濯機", "zh": "洗衣机", "ko": "세탁기", "fr": "Machine a laver", "es": "Lavadora"}, "body": {"en": "Add liquid detergent in the detergent compartment and fabric softener in the softener compartment. Turn the machine on, choose the course, and press START/PAUSE to begin.", "ja": "洗剤投入口に液体洗剤、柔軟剤投入口に柔軟剤を入れてください。電源を入れ、コースを選び、START/PAUSEで洗濯を始めます。", "zh": "将液体洗涤剂加入洗剂格，将柔顺剂加入柔顺剂格。打开电源，选择程序后按 START/PAUSE 开始洗衣。", "ko": "세제 칸에 액체 세제를, 유연제 칸에 섬유유연제를 넣어 주세요. 전원을 켜고 코스를 선택한 뒤 START/PAUSE를 누르면 시작됩니다.", "fr": "Ajoutez la lessive liquide dans le compartiment detergent et l assouplissant dans le compartiment reserve. Allumez la machine, choisissez le programme puis appuyez sur START/PAUSE.", "es": "Ponga el detergente liquido en el compartimento del detergente y el suavizante en su compartimento. Encienda la maquina, elija el programa y pulse START/PAUSE."}}, {"image": "./assets/pdf-pages/page-3.jpg", "title": {"en": "TV", "ja": "テレビ", "zh": "电视", "ko": "TV", "fr": "Television", "es": "Television"}, "body": {"en": "Use the smart TV remote for power, volume, and the home menu.", "ja": "スマートテレビのリモコンで電源、音量、ホームメニューを操作できます。", "zh": "使用智能电视遥控器控制电源、音量和主菜单。", "ko": "스마트 TV 리모컨으로 전원, 음량, 홈 메뉴를 조작할 수 있습니다.", "fr": "Utilisez la telecommande de la Smart TV pour l alimentation, le volume et le menu principal.", "es": "Use el mando del Smart TV para el encendido, el volumen y el menu principal."}}, {"image": "./assets/pdf-pages/page-4.jpg", "title": {"en": "Lighting Remote", "ja": "照明リモコン", "zh": "灯光遥控器", "ko": "조명 리모컨", "fr": "Telecommande d eclairage", "es": "Mando de iluminacion"}, "body": {"en": "Use ON and OFF to control the light, and Bright or Dim to adjust the brightness.", "ja": "ONとOFFで照明を操作し、BrightとDimで明るさを調整します。", "zh": "使用 ON 和 OFF 控制灯光，用 Bright 和 Dim 调节亮度。", "ko": "ON과 OFF로 조명을 켜고 끄며 Bright와 Dim으로 밝기를 조절할 수 있습니다.", "fr": "Utilisez ON et OFF pour la lumiere, puis Bright ou Dim pour regler la luminosite.", "es": "Use ON y OFF para controlar la luz, y Bright o Dim para ajustar el brillo."}}, {"image": "./assets/pdf-pages/page-5.jpg", "title": {"en": "IH Cooktop", "ja": "IHクッキングヒーター", "zh": "IH电磁炉", "ko": "IH 쿡탑", "fr": "Plaque a induction", "es": "Cocina de induccion"}, "body": {"en": "Press the power button to turn the cooktop on. Adjust the heat with the upper and lower buttons, and turn the heat off after cooking.", "ja": "電源ボタンでIHを起動し、上下ボタンで火力を調整します。調理後は必ず加熱を停止してください。", "zh": "按电源按钮启动电磁炉，用上下按钮调节火力，烹饪结束后请关闭加热。", "ko": "전원 버튼으로 IH를 켜고 위아래 버튼으로 화력을 조절하세요. 조리 후에는 반드시 전원을 꺼 주세요.", "fr": "Appuyez sur le bouton d alimentation pour allumer la plaque. Reglez la puissance avec les boutons haut et bas, puis coupez la chauffe apres la cuisson.", "es": "Pulse el boton de encendido para activar la placa. Ajuste la potencia con los botones superior e inferior y apaguela al terminar."}}, {"image": "./assets/pdf-pages/page-6.jpg", "title": {"en": "Water Heater", "ja": "給湯器", "zh": "热水器", "ko": "온수기", "fr": "Chauffe-eau", "es": "Calentador de agua"}, "body": {"en": "Press ON/OFF before using hot water. Use the upper and lower buttons if you need to change the temperature.", "ja": "お湯を使う前にON/OFFを押してください。温度を変えたいときは上下ボタンで調整します。", "zh": "使用热水前请先按 ON/OFF。如需调节温度，请使用上下按钮。", "ko": "온수를 사용하기 전에 ON/OFF를 눌러 주세요. 온도를 바꾸려면 위아래 버튼을 사용하면 됩니다.", "fr": "Appuyez sur ON/OFF avant d utiliser l eau chaude. Utilisez les boutons haut et bas pour changer la temperature si besoin.", "es": "Pulse ON/OFF antes de usar el agua caliente. Si necesita cambiar la temperatura, use los botones superior e inferior."}}, {"image": "./assets/pdf-pages/page-7.jpg", "title": {"en": "Microwave", "ja": "電子レンジ", "zh": "微波炉", "ko": "전자레인지", "fr": "Micro-ondes", "es": "Microondas"}, "body": {"en": "Open the microwave door, place the food inside, choose the power level, and set the cooking time with the dial.", "ja": "ドアを開けて食品を入れ、出力を選び、ダイヤルで加熱時間を設定してください。", "zh": "打开微波炉门放入食物，选择功率，然后用旋钮设定加热时间。", "ko": "문을 열고 음식을 넣은 뒤 출력 단계를 선택하고 다이얼로 가열 시간을 맞춰 주세요.", "fr": "Ouvrez la porte du micro-ondes, placez les aliments, choisissez la puissance puis reglez le temps avec la molette.", "es": "Abra la puerta del microondas, coloque la comida, elija la potencia y ajuste el tiempo con la rueda."}}, {"image": "./assets/pdf-pages/page-8.jpg", "title": {"en": "Toaster Oven", "ja": "オーブントースター", "zh": "烤面包机", "ko": "토스터 오븐", "fr": "Mini four grille-pain", "es": "Horno tostador"}, "body": {"en": "Place the food inside and set the timer. The toaster oven starts automatically.", "ja": "食べ物を入れてタイマーを設定すると、自動で加熱が始まります。", "zh": "放入食物并设定定时器后，烤箱会自动开始加热。", "ko": "음식을 넣고 타이머를 맞추면 자동으로 작동합니다.", "fr": "Placez les aliments a l interieur et reglez le minuteur. Le mini four demarre automatiquement.", "es": "Coloque la comida dentro y ajuste el temporizador. El horno tostador empezara automaticamente."}}];
 let currentLang = 'en';
@@ -71,14 +73,14 @@ function renderSections() {
   `).join('');
   document.getElementById('back-link').innerHTML = STRINGS[currentLang].back;
 }
-document.querySelectorAll('.lang-btn').forEach((button) => {
-  button.addEventListener('click', () => {
-    currentLang = button.dataset.lang;
-    document.querySelectorAll('.lang-btn').forEach((btn) => btn.classList.toggle('active', btn === button));
-    renderSections();
-  });
+document.addEventListener('DOMContentLoaded', () => {
+  const initLang = (typeof I18N !== 'undefined') ? I18N.getLang() : 'en';
+  currentLang = STRINGS[initLang] ? initLang : 'en';
+  renderSections();
+  if (typeof I18N !== 'undefined') {
+    I18N.init({ strings: { en:{},ja:{},zh:{},ko:{},fr:{},es:{} }, onChange: (l)=>{ currentLang = l; renderSections(); } });
+  }
 });
-renderSections();
 </script>
 </body>
 </html>
